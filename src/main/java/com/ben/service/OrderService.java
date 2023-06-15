@@ -2,6 +2,7 @@ package com.ben.service;
 
 import com.spring.Autowired;
 import com.spring.Component;
+import com.spring.Scope;
 
 /**
  * @Author: benjieqiang
@@ -10,8 +11,11 @@ import com.spring.Component;
  * @Version: 1.0
  */
 
+@Component("orderService")
+@Scope("prototype")
 public class OrderService {
 
+    @Autowired
     private UserService userService;
 
     public void test() {
