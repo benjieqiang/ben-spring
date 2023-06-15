@@ -6,7 +6,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-// 用在类上，保留在运行时
+/**
+ * @description 注入bean对象
+ * @author benjieqiang
+ * @date 2023/6/15 10:44 AM
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.FIELD})
 public @interface Autowired {

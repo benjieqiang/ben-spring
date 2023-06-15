@@ -10,10 +10,8 @@ import com.spring.Component;
  * @Version: 1.0
  */
 
-@Component("orderService")
 public class OrderService {
 
-    @Autowired
     private UserService userService;
 
     public void test() {

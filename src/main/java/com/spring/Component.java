@@ -6,7 +6,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-// 用在类上，保留在运行时
+/**
+ * @description 告诉Spring给哪个类创建对象
+ * @author benjieqiang
+ * @date 2023/6/15 10:45 AM
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Component {
