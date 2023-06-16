@@ -144,7 +144,7 @@ public class BenApplicationContext {
     private Object createBean(String beanName, BeanDefinition beanDefinition) {
         Class clazz = beanDefinition.getType();
         try {
-            Object obj = clazz.getDeclaredConstructor().newInstance();
+            Object intance = clazz.getDeclaredConstructor().newInstance();
             // 简单版的依赖注入
             for (Field field : clazz.getDeclaredFields()) {
                 // 只给属性上有Autowired注解的对象赋值；
@@ -152,14 +152,18 @@ public class BenApplicationContext {
                     // 调用getBean方法，把注解的对象名字传入
                     Object bean = getBean(field.getName());
                     field.setAccessible(true);
-                    field.set(obj, bean);
+                    field.set(intance, bean);
                     System.out.println("正在往"+ clazz.getName() +"注入bean：" + bean);
                 }
             }
+            // 调用Aware接口，
+            if (intance instanceof BeanNameAware) {
+                ((BeanNameAware) intance).setBeanName(beanName);
+            }
 
 
-            System.out.println("调用creatBean方法创建Bean对象：" + obj);
-            return obj;
+            System.out.println("调用creatBean方法创建Bean对象：" + intance);
+            return intance;
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
