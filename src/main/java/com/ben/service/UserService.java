@@ -9,6 +9,7 @@ import com.spring.Component;
  * @Version: 1.0
  */
 
-@Component("userService")
+@Component // 不指定名字，则调用Spring的生成beanName的规则；
+//@Component("userService")
 public class UserService {
 }

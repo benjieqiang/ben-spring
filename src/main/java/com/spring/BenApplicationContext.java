@@ -1,10 +1,13 @@
 package com.spring;
 
 
+import java.beans.Introspector;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
+
 
 /**
  * @Author: benjieqiang
@@ -68,6 +71,13 @@ public class BenApplicationContext {
                             if (aClass.isAnnotationPresent(Component.class)) {
                                 Component declaredAnnotation = aClass.getDeclaredAnnotation(Component.class);
                                 String beanName = declaredAnnotation.value();
+                                // 如果beanName为空，那么调用方法Introspector.decapitalize来生成一个beanName
+                                // 生成规则：传入源代码中给出的底层类的简单名称
+                                // 如果name长度大于1且前两个字符是大写，则直接返回；
+                                // 否则，先转成字符数组，把第一个字符大写，再调用String构造方法返回字符串
+                                if (beanName.equals("")) {
+                                    beanName = Introspector.decapitalize(aClass.getSimpleName());
+                                }
                                 System.out.println("获取bean名：" + beanName);
                                 // spring容器不直接创建对象，而是利用map<beanName, BeanDefination beanDefination>来存储bean的信息
                                 BeanDefinition beanDefinition = new BeanDefinition();
@@ -109,8 +119,9 @@ public class BenApplicationContext {
                 Object obj = singletonObjects.get(beanName);
                 if (obj == null) {
                     //单例池中没有，先创建bean，再放入单例池；
-                    obj =  createBean(beanName, beanDefinition);
+                    obj = createBean(beanName, beanDefinition);
                     singletonObjects.put(beanName, obj);
+                    System.out.println("单例池中没有该bean，创建了一个：" + obj);
                 }
                 return obj;
             } else {
@@ -121,9 +132,9 @@ public class BenApplicationContext {
         }
     }
 
-    
+
     /**
-     * @param beanName: 
+     * @param beanName:
      * @param beanDefinition: bean定义
      * @return Object
      * @description 单例bean和原型bean均调用此方法来创建bean对象
@@ -134,6 +145,19 @@ public class BenApplicationContext {
         Class clazz = beanDefinition.getType();
         try {
             Object obj = clazz.getDeclaredConstructor().newInstance();
+            // 简单版的依赖注入
+            for (Field field : clazz.getDeclaredFields()) {
+                // 只给属性上有Autowired注解的对象赋值；
+                if (field.isAnnotationPresent(Autowired.class)) {
+                    // 调用getBean方法，把注解的对象名字传入
+                    Object bean = getBean(field.getName());
+                    field.setAccessible(true);
+                    field.set(obj, bean);
+                    System.out.println("正在往"+ clazz.getName() +"注入bean：" + bean);
+                }
+            }
+
+
             System.out.println("调用creatBean方法创建Bean对象：" + obj);
             return obj;
         } catch (InstantiationException e) {

@@ -11,7 +11,7 @@ import com.spring.Scope;
  * @Version: 1.0
  */
 
-@Component("orderService")
+@Component
 @Scope("prototype")
 public class OrderService {
 
@@ -19,6 +19,6 @@ public class OrderService {
     private UserService userService;
 
     public void test() {
-        System.out.println(userService);
+        System.out.println("orderService中注入对象： " + userService);
     }
 }

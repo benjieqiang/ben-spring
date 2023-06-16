@@ -12,6 +12,6 @@ import java.lang.annotation.Target;
  * @date 2023/6/15 10:44 AM
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.FIELD})
+@Target({ElementType.FIELD})
 public @interface Autowired {
 }
