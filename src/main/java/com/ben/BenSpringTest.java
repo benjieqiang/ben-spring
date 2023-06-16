@@ -44,4 +44,11 @@ public class BenSpringTest {
         OrderService orderService = (OrderService)applicationContext.getBean("orderService");
         orderService.getBeanName();
     }
+
+    @Test
+    public void testInitializingBean() throws Exception {
+        BenApplicationContext benApplicationContext = new BenApplicationContext(AppConfig.class);
+        UserService service = (UserService) benApplicationContext.getBean("userService");
+        service.afterPropertiesSet();
+    }
 }

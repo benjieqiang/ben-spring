@@ -160,7 +160,14 @@ public class BenApplicationContext {
             if (intance instanceof BeanNameAware) {
                 ((BeanNameAware) intance).setBeanName(beanName);
             }
-
+            // 初始化
+            if (intance instanceof InitializingBean) {
+                try {
+                    ((InitializingBean) intance).afterPropertiesSet();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
 
             System.out.println("调用creatBean方法创建Bean对象：" + intance);
             return intance;
