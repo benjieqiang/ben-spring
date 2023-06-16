@@ -22,13 +22,26 @@ public class BenApplicationContext {
     public BenApplicationContext(Class configName) {
         this.configName = configName;
         // 根据传递进来的配置类进行解析
-        // 1. 如果是ComponentScan类型的注解
+        // 如果是ComponentScan类型的注解
+        scan(configName);
+
+        // 创建所有的单例bean对象
+        beanDefinitionMap.forEach((beanName, beanDefinition) -> {
+            if ("singleton".equals(beanDefinition.getScope())) {
+                System.out.println("正在创建所有单例bean对象：" + beanName);
+                // 是单例，则调用构造方法创建对象
+                singletonObjects.put(beanName, createBean(beanName, beanDefinition));
+            }
+        });
+    }
+
+    private void scan(Class configName) {
         System.out.println("********开始扫描ComponentScan注解******");
         if (configName.isAnnotationPresent(ComponentScan.class)) {
             // 2. 拿到注解值: 扫描路径，得到的是一个string；
             ComponentScan componentScan = (ComponentScan) configName.getDeclaredAnnotation(ComponentScan.class);
             String path = componentScan.value();
-            System.out.println("拿到路径" + path);
+            System.out.println("拿到扫描路径" + path);
             // 3. 通过类加载器来加载class文件到jvm
             // 3.1 获取当前类的classloader
             ClassLoader classLoader = BenApplicationContext.class.getClassLoader();
@@ -78,14 +91,6 @@ public class BenApplicationContext {
             }
         }
         System.out.println("********扫描结束，开始创建所有的单例bean对象******");
-
-        beanDefinitionMap.forEach((beanName, beanDefinition) -> {
-            if ("singleton".equals(beanDefinition.getScope())) {
-                System.out.println("正在创建所有单例bean对象：" + beanName);
-                // 是单例，则调用构造方法创建对象
-                singletonObjects.put(beanName, createBean(beanName, beanDefinition));
-            }
-        });
     }
 
     /**
